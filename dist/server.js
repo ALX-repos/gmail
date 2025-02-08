@@ -7,6 +7,7 @@ require("dotenv/config");
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const gmail_1 = __importDefault(require("./routes/gmail"));
+const apple_1 = __importDefault(require("./routes/apple"));
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 8080;
 const URI = process.env.MONGODB_URI || "";
@@ -17,3 +18,4 @@ mongoose_1.default.connect(URI).then(() => {
     });
 });
 app.use("/api/gmail", gmail_1.default);
+app.use("/api/apple", apple_1.default);
