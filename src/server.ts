@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import mongoose from "mongoose";
 import gmailRouter from "./routes/gmail";
+import appleRouter from "./routes/apple";
 
 const app = express();
 
@@ -17,3 +18,5 @@ mongoose.connect(URI).then(() => {
 });
 
 app.use("/api/gmail", gmailRouter);
+
+app.use("/api/apple", appleRouter);
