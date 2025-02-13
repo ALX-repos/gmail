@@ -25,6 +25,20 @@ export interface AppleAccountProps {
   createdAt: Date;
 }
 
+export interface ParentProps {
+  _id: string;
+  email: string;
+  password: string;
+  date: string;
+  first_q: string;
+  second_q: string;
+  third_q: string;
+  cvv: string;
+  stop_sharing: string;
+  no_of_family: string;
+  createdAt: Date;
+}
+
 export interface AppleAccountWithParentProps {
   _id: string;
   email: string;

