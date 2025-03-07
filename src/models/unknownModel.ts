@@ -58,10 +58,8 @@ const UnknownSchema = new Schema({
     type: String,
     required: true,
   },
-  cvv: {
-    type: String,
-    required: true,
-  },
+  cvv: String,
+  url: String,
   createdAt: {
     type: Date,
     default: () => Date.now(),

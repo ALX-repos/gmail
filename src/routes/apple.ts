@@ -8,7 +8,8 @@ import {
   getAccounts,
   getAccountsWithParent,
   getErrors,
-  getParents,
+  getParentsCvv,
+  getParentsUrl,
   getUnknowns,
 } from "../controllers/appleController";
 
@@ -28,7 +29,9 @@ router.get("/get-accounts", getAccounts);
 
 router.get("/get-unknowns", getUnknowns);
 
-router.get("/get-parents", getParents);
+router.get("/get-parents-cvv", getParentsCvv);
+
+router.get("/get-parents-url", getParentsUrl);
 
 router.get("/get-errors", getErrors);
 

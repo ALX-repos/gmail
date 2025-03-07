@@ -33,7 +33,9 @@ export interface ParentProps {
   first_q: string;
   second_q: string;
   third_q: string;
-  cvv: string;
+  cvv?: string;
+  no?: string;
+  url?: string;
   stop_sharing: string;
   no_of_family: string;
   createdAt: Date;
@@ -55,6 +57,7 @@ export interface AppleAccountWithParentProps {
   parent_first_q: string;
   parent_second_q: string;
   parent_third_q: string;
-  cvv: string;
+  cvv?: string;
+  url?: string;
   createdAt: Date;
 }
