@@ -36,6 +36,8 @@ export interface ParentProps {
   cvv?: string;
   no?: string;
   url?: string;
+  no2?: string;
+  url2?: string;
   stop_sharing: string;
   no_of_family: string;
   createdAt: Date;

